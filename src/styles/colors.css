@@ -1,7 +1,7 @@
 @define-mixin light-mode {
 	--color-text: 0 0% 4%;
 	--color-bg: 0 0% 100%;
-	--color-card: 0 0% 50% / 0.2;
+	--color-card: 0 0% 95%;
 	--color-primary: 7 93% 65%;
 
 	color-scheme: light;
@@ -10,7 +10,7 @@
 @define-mixin dark-mode {
 	--color-text: 0 0% 100%;
 	--color-bg: 0 0% 4%;
-	--color-card: 0 0% 13% / 0.8;
+	--color-card: 0 0% 10%;
 	--color-primary: 330 100% 71%;
 
 	color-scheme: dark;

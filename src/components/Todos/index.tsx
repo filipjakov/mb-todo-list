@@ -67,7 +67,7 @@ export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
 			</fieldset>
 
 			<label className={cx('new-todo')}>
-				<span>New Todo:</span>
+				<span>New:</span>
 				<input type="text" placeholder="You next TODO item" name="newTodo" ref={newTodoRef} required />
 			</label>
 		</form>

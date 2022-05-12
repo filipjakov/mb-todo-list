@@ -69,10 +69,15 @@
 }
 
 .new-todo {
+	position: sticky;
+	bottom: 0;
+
 	display: grid;
-	grid-template-columns: max-content 1fr;
+	grid-template-columns: max-content minmax(0, 1fr);
 	align-items: center;
 	column-gap: 1ch;
+
+	background-color: hsl(var(--color-card));
 
 	& > input {
 		--_border-color: hsl(var(--color-primary) / 0.5);
