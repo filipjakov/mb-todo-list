@@ -2,12 +2,14 @@
 
 A simple TODO list app
 
-## Tech Stack
+## Editor
 
 VSCode usage preferred:
 
 - `.vscode/extensions.json` has preffered plugins
 - `.vscode/settings.json` hold the setting for the project (formatting on save, linting on change...)
+
+## Tech Stack
 
 - Framework - Next.js + Preact (more lightweight)
 - Typescript
