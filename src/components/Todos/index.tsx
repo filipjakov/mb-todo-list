@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { ComponentProps, DOMAttributes, FC, FormEvent, useRef, useState } from 'react';
+import { ComponentProps, DOMAttributes, FC, FormEvent, useLayoutEffect, useRef, useState } from 'react';
 
 import { Todo } from '@components/Todo';
 
@@ -8,19 +8,18 @@ import styles from './index.module.css';
 const cx = classNames.bind(styles);
 
 export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
-	const [todos, setTodos] = useState<Array<string>>([
-		'potato',
-		'tomato',
-		'item 3',
-		'item 4',
-		'superlongitem'.repeat(5),
-	]);
+	const [todos, setTodos] = useState<Array<string>>([]);
 	const newTodoRef = useRef<HTMLInputElement>(null);
 
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const { newTodo } = Object.fromEntries(new FormData(e.currentTarget));
-		setTodos((prevState) => prevState.concat(newTodo!.toString()));
+
+		setTodos((prevState) => {
+			const newState = prevState.concat(newTodo!.toString());
+			localStorage.setItem('todos', JSON.stringify(newState));
+			return newState;
+		});
 
 		/** Reset input */
 		newTodoRef.current!.value = '';
@@ -29,8 +28,24 @@ export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
 	const onRemove: DOMAttributes<HTMLButtonElement>['onClick'] = ({ currentTarget }) => {
 		const removedItemIndex = +currentTarget.dataset['index']!;
 
-		setTodos((prevState) => prevState.filter((_, i) => i !== removedItemIndex));
+		setTodos((prevState) => {
+			const newState = prevState.filter((_, i) => i !== removedItemIndex);
+			localStorage.setItem('todos', JSON.stringify(newState));
+			return newState;
+		});
 	};
+
+	useLayoutEffect(() => {
+		const userTodos = localStorage.getItem('todos');
+
+		if (userTodos) {
+			try {
+				setTodos(JSON.parse(userTodos));
+			} catch (e) {
+				console.error(e);
+			}
+		}
+	}, []);
 
 	return (
 		<form onSubmit={onSubmit} className={cx(className, 'root')} {...rest}>
@@ -53,7 +68,7 @@ export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
 
 			<label className={cx('new-todo')}>
 				<span>New Todo:</span>
-				<input type="text" placeholder="You next TODO item" name="newTodo" ref={newTodoRef} />
+				<input type="text" placeholder="You next TODO item" name="newTodo" ref={newTodoRef} required />
 			</label>
 		</form>
 	);

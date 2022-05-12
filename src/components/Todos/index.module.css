@@ -42,7 +42,7 @@
 		}
 
 		&:where(:hover, :focus-visible) > *:where(:hover, :focus) {
-			transform: var(--nomotion, translateZ(1rem));
+			transform: var(--nomotion, translateZ(0.5rem));
 			opacity: 1;
 		}
 
