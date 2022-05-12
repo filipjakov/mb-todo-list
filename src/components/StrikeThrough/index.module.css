@@ -1,0 +1,4 @@
+.root {
+	text-decoration: line-through;
+	text-decoration-color: hsl(var(--color-primary));
+}

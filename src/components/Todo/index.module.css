@@ -1,0 +1,22 @@
+.root {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	column-gap: 1ch;
+	align-items: center;
+	cursor: pointer;
+
+	& > input {
+		width: 1.5rem;
+		height: 1.5rem;
+		margin: 0;
+	}
+
+	& > :last-child {
+		/* These are technically the same, but use both */
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-word;
+		/* Adds a hyphen where the word breaks, if supported (No Blink) */
+		hyphens: auto;
+	}
+}

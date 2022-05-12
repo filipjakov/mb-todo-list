@@ -1,32 +1,40 @@
 @define-mixin light-mode {
-	--color-text: #0a0a0a;
-	--color-bg: #fff;
+	--color-text: 0 0% 4%;
+	--color-bg: 0 0% 100%;
+	--color-card: 0 0% 50% / 0.2;
+	--color-primary: 7 93% 65%;
 
-	accent-color: #f96653;
+	color-scheme: light;
 }
 
 @define-mixin dark-mode {
-	--color-text: #fff;
-	--color-bg: #0a0a0a;
+	--color-text: 0 0% 100%;
+	--color-bg: 0 0% 4%;
+	--color-card: 0 0% 13% / 0.8;
+	--color-primary: 330 100% 71%;
 
-	accent-color: hotpink;
+	color-scheme: dark;
 }
 
-html {
+:root {
 	@mixin light-mode;
+
+	accent-color: hsl(var(--color-primary));
+	color: hsl(var(--color-text));
+	background-color: hsl(var(--color-bg));
 }
 
-html[data-supports-dark-mode][data-theme='dark'] {
+:root[data-theme='dark'] {
 	@mixin dark-mode;
 }
 
 /* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
-	html[data-supports-dark-mode] {
+	:root {
 		@mixin dark-mode;
 	}
 
-	html[data-theme='light'] {
+	:root[data-theme='light'] {
 		@mixin light-mode;
 	}
 }

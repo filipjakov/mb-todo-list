@@ -6,18 +6,21 @@ class MyDocument extends Document {
 			<Html>
 				<Head>
 					{/* Favicon */}
-					<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-					<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
-					<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
-					<link rel="manifest" href="/favicon/site.webmanifest" />
-					<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#fa3244" />
-					<link rel="shortcut icon" href="/favicon/favicon.ico" />
-					<meta name="msapplication-TileColor" content="#ff0000" />
-					<meta name="msapplication-config" content="/favicon/browserconfig.xml" />
-					<meta property="fb:app_id" content="2845741545662785" />
-					<meta property="al:android:package" content="com.sportening" />
-					<meta property="al:android:app_name" content="Sportening" />
+					<link rel="icon" href="/favicon.ico" sizes="any" />
+					<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+					<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+					<link rel="manifest" href="/manifest.webmanifest" />
+
+					<title>TODO App</title>
+					<meta name="description" content="The ultimate TODO app with dark mode support" />
+
+					{/* <meta property="og:url" content="" /> */}
+					<meta property="og:title" content="TODO App" />
+					<meta property="og:description" content="The ultimate TODO app with dark mode support" />
+
+					<meta property="og:type" content="website" />
 				</Head>
+
 				<body>
 					<Main />
 					<NextScript />

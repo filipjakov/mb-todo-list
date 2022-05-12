@@ -35,3 +35,10 @@ html {
 		display: none;
 	}
 }
+
+/* https://christianheilmann.com/2021/03/13/conditional-animation-with-css-properties/ */
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--nomotion: none;
+	}
+}

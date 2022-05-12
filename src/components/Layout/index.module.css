@@ -1,0 +1,15 @@
+.root {
+	--layout-gutter: 1rem;
+
+	display: grid;
+	grid-template-columns:
+		minmax(var(--layout-gutter), 1fr)
+		minmax(auto, 50ch)
+		minmax(var(--layout-gutter), 1fr);
+
+	min-height: 100%;
+
+	& > * {
+		grid-column: 2;
+	}
+}

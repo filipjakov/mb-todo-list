@@ -1,0 +1,94 @@
+.root {
+	display: flex;
+	flex-direction: column;
+
+	overflow-y: auto;
+
+	& > :last-child {
+		margin-top: auto;
+	}
+}
+
+.todo-container {
+	padding: 1rem;
+	perspective: 1000px;
+
+	& > * {
+		margin-bottom: 1rem;
+	}
+
+	&:empty {
+		position: relative;
+		width: 100%;
+		height: 100%;
+
+		&::after {
+			content: 'Add a todo item below!';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+		}
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		& > * {
+			transition: var(--nomotion, 300ms opacity), var(--nomotion, 300ms transform);
+		}
+
+		&:where(:hover, :focus-visible) > * {
+			opacity: var(--nomotion, 0.4);
+		}
+
+		&:where(:hover, :focus-visible) > *:where(:hover, :focus) {
+			transform: var(--nomotion, translateZ(1rem));
+			opacity: 1;
+		}
+
+		&:hover > :focus:not(:hover) {
+			transform: var(--nomotion, scale(1.05));
+		}
+	}
+}
+
+.todo {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	column-gap: 1ch;
+
+	& > button {
+		cursor: pointer;
+		line-height: 0;
+
+		&:focus-visible {
+			outline: hsl(var(--color-primary) / 0.5) auto 1px;
+			outline-offset: 2px;
+		}
+	}
+}
+
+.new-todo {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	align-items: center;
+	column-gap: 1ch;
+
+	& > input {
+		--_border-color: hsl(var(--color-primary) / 0.5);
+
+		border: 2px solid var(--_border-color);
+		border-radius: 0.2rem;
+		padding: 0.5rem;
+
+		transition: var(--nomotion, border-color 200ms ease);
+
+		&::placeholder {
+			color: hsl(var(--color-text) / 0.4);
+		}
+
+		&:focus {
+			--_border-color: hsl(var(--color-primary) / 1);
+		}
+	}
+}
