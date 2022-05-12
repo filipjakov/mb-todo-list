@@ -4,6 +4,11 @@ A simple TODO list app
 
 ## Tech Stack
 
+VSCode usage preferred:
+
+- `.vscode/extensions.json` has preffered plugins
+- `.vscode/settings.json` hold the setting for the project (formatting on save, linting on change...)
+
 - Framework - Next.js + Preact (more lightweight)
 - Typescript
 - Styling - CSS Modules (preprocessed via [PostCSS/PostCSS-preset-env](https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env)) and [classnames](https://github.com/JedWatson/classnames)
