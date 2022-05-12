@@ -51,7 +51,7 @@ export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
 	}, []);
 
 	return (
-		<form onSubmit={onSubmit} className={cx(className, 'root')} {...rest}>
+		<form onSubmit={onSubmit} className={cx(className, 'root')} autoComplete="off" {...rest}>
 			<TransitionGroup component="fieldset" className={cx('todo-container')}>
 				{todos.map((todo, i) => (
 					<CSSTransition key={i} timeout={prefersReducedMotion ? 0 : 300} classNames="fade">
