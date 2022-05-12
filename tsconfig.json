@@ -16,7 +16,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@components/*": ["src/components/*"],
-			"@pages/*": ["src/pages/*"]
+			"@pages/*": ["src/pages/*"],
+			"@hooks/*": ["src/hooks/*"]
 		},
 		"incremental": true,
 		"typeRoots": ["./node_modules/@types"],
