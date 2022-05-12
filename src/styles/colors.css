@@ -1,0 +1,32 @@
+@define-mixin light-mode {
+	--color-text: #0a0a0a;
+	--color-bg: #fff;
+
+	accent-color: #f96653;
+}
+
+@define-mixin dark-mode {
+	--color-text: #fff;
+	--color-bg: #0a0a0a;
+
+	accent-color: hotpink;
+}
+
+html {
+	@mixin light-mode;
+}
+
+html[data-supports-dark-mode][data-theme='dark'] {
+	@mixin dark-mode;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+	html[data-supports-dark-mode] {
+		@mixin dark-mode;
+	}
+
+	html[data-theme='light'] {
+		@mixin light-mode;
+	}
+}

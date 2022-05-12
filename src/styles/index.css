@@ -1,0 +1,37 @@
+@import './reset.css';
+@import './colors.css';
+@import './typography.css';
+
+:root {
+	/* Disable the highlight that appears over a link while it's being tapped */
+	-webkit-tap-highlight-color: transparent;
+	/* Disable display of the default callout shown when you touch and hold a touch target. */
+	-webkit-touch-callout: none;
+	scroll-behavior: smooth;
+
+	/* Add notch spacing to variables (mobile) */
+	--env-p-top: env(safe-area-inset-top, 0);
+	--env-p-right: env(safe-area-inset-right, 0);
+	--env-p-bottom: env(safe-area-inset-bottom, 0);
+	--env-p-left: env(safe-area-inset-left, 0);
+
+	display: grid;
+	min-height: 100%;
+
+	padding: var(--env-p-top) var(--env-p-right) var(--env-p-bottom) var(--env-p-left);
+}
+
+body {
+	text-rendering: optimizeSpeed;
+}
+
+#__next {
+	height: 100%;
+}
+
+/* Reset gramarly and similiar extensions that get injected under the root */
+html {
+	& > :not(head):not(body) {
+		display: none;
+	}
+}
