@@ -6,22 +6,41 @@ import styles from './index.module.css';
 
 const cx = classNames.bind(styles);
 
-interface TodoProps extends ComponentProps<'label'> {
+export interface TodoData {
+	id: number;
 	text: string;
+	due: string | undefined;
+	isDone: boolean;
 }
 
-export const Todo: FC<TodoProps> = ({ className, text, ...rest }) => {
-	const [done, setDone] = useState(false);
+interface TodoProps extends Omit<TodoData, 'id'>, ComponentProps<'label'> {
+	onToggle: (...args: any) => any;
+}
+
+export const Todo: FC<TodoProps> = ({ className, isDone, text, due, onToggle, ...rest }) => {
+	const [done, setDone] = useState(isDone);
+	const Component = done ? StrikeThrough : 'span';
 
 	const onClick: DOMAttributes<HTMLInputElement>['onClick'] = ({ currentTarget }) => {
 		setDone(currentTarget.checked);
+		onToggle();
 	};
 
 	return (
 		<label className={cx(className, 'root')} {...rest}>
-			<input type="checkbox" onClick={onClick} />
+			<input type="checkbox" onClick={onClick} checked={isDone} />
 
-			{done ? <StrikeThrough>{text}</StrikeThrough> : <span>{text}</span>}
+			<Component>
+				{due ? (
+					<>
+						{text}
+						<br />
+						Due: {due}
+					</>
+				) : (
+					text
+				)}
+			</Component>
 		</label>
 	);
 };

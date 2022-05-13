@@ -42,3 +42,8 @@ html {
 		--nomotion: none;
 	}
 }
+
+*:focus-visible {
+	outline: hsl(var(--color-primary) / 0.5) auto 1px;
+	outline-offset: 2px;
+}

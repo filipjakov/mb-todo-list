@@ -1,62 +1,70 @@
 import classNames from 'classnames/bind';
-import { ComponentProps, DOMAttributes, FC, FormEvent, useLayoutEffect, useRef, useState } from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { Reorder } from 'framer-motion';
+import { ComponentProps, DOMAttributes, FC, FormEvent } from 'react';
 
-import { Todo } from '@components/Todo';
-import { useDoesPreferReducedMotion } from '@hooks/useDoesPreferReducedMotion';
+import { Todo, TodoData } from '@components/Todo';
+import { useEntriesStorage } from '@hooks/useEntriesStorage';
+import { useHotKeys } from '@hooks/useHotKeys';
+import { useRetrievableState } from '@hooks/useRetrievableState';
 
 import styles from './index.module.css';
 
 const cx = classNames.bind(styles);
 
-export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
-	const [todos, setTodos] = useState<Array<string>>([]);
-	const newTodoRef = useRef<HTMLInputElement>(null);
-	const { prefersReducedMotion } = useDoesPreferReducedMotion();
+export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => {
+	const { state: todos, push, back, forward, reset } = useRetrievableState<Array<TodoData>>([]);
 
+	useEntriesStorage({ onMount: reset, data: todos });
+	useHotKeys({ onUndo: back, onRedo: forward });
+
+	// Handlers
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const { newTodo } = Object.fromEntries(new FormData(e.currentTarget));
+		const { text, due } = Object.fromEntries(new FormData(e.currentTarget));
 
-		setTodos((prevState) => {
-			const newState = prevState.concat(newTodo!.toString());
-			localStorage.setItem('todos', JSON.stringify(newState));
-			return newState;
-		});
+		push(
+			todos.concat({
+				id: new Date().getTime(),
+				text: text!.toString(),
+				due: due?.toString(),
+				isDone: false,
+			})
+		);
 
-		/** Reset input */
-		newTodoRef.current!.value = '';
+		// Reset input element value
+		(e.currentTarget.querySelector("input[type='text']") as HTMLInputElement).value = '';
 	};
 
 	const onRemove: DOMAttributes<HTMLButtonElement>['onClick'] = ({ currentTarget }) => {
 		const removedItemIndex = +currentTarget.dataset['index']!;
 
-		setTodos((prevState) => {
-			const newState = prevState.filter((_, i) => i !== removedItemIndex);
-			localStorage.setItem('todos', JSON.stringify(newState));
-			return newState;
-		});
+		push(todos.filter((_, i) => i !== removedItemIndex));
 	};
 
-	useLayoutEffect(() => {
-		const userTodos = localStorage.getItem('todos');
-
-		if (userTodos) {
-			try {
-				setTodos(JSON.parse(userTodos));
-			} catch (e) {
-				console.error(e);
-			}
-		}
-	}, []);
+	const onToggle = (index: number) => () => {
+		push(
+			todos.reduce((accumulator, item, currentIndex) => {
+				// Flip the existing checkbox value
+				const newItem = index === currentIndex ? { ...item, isDone: !item.isDone } : item;
+				return accumulator.concat(newItem);
+			}, [] as typeof todos)
+		);
+	};
 
 	return (
-		<form onSubmit={onSubmit} className={cx(className, 'root')} autoComplete="off" {...rest}>
-			<TransitionGroup component="fieldset" className={cx('todo-container')}>
-				{todos.map((todo, i) => (
-					<CSSTransition key={i} timeout={prefersReducedMotion ? 0 : 300} classNames="fade">
-						<div className={cx('todo')}>
-							<Todo text={todo} />
+		<section className={cx('root')} {...rest}>
+			{todos.length > 0 ? (
+				<Reorder.Group className={cx('todo-container')} axis="y" layoutScroll values={todos} onReorder={push}>
+					{todos.map((item, i) => (
+						<Reorder.Item
+							className={cx('todo')}
+							key={item.id}
+							value={item}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+						>
+							<Todo isDone={item.isDone} text={item.text} due={item.due} onToggle={onToggle(i)} />
 
 							<button type="button" data-index={i} onClick={onRemove}>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 875 1000" width="24" height="24">
@@ -66,14 +74,24 @@ export const Todos: FC<ComponentProps<'form'>> = ({ className, ...rest }) => {
 									/>
 								</svg>
 							</button>
-						</div>
-					</CSSTransition>
-				))}
-			</TransitionGroup>
+						</Reorder.Item>
+					))}
+				</Reorder.Group>
+			) : (
+				<div className={cx('no-items')}>Enter a new todo below</div>
+			)}
 
-			<label className={cx('new-todo')}>
-				<input type="text" placeholder="Your next TODO item" name="newTodo" ref={newTodoRef} required />
-			</label>
-		</form>
+			<form onSubmit={onSubmit} className={cx(className, 'form')} autoComplete="off">
+				<label>
+					<input type="text" placeholder="Your next TODO item" name="text" required />
+				</label>
+
+				<label>
+					<input type="date" name="due" min={new Date().toJSON().slice(0, 10)} />
+				</label>
+
+				<button type="submit">Submit</button>
+			</form>
+		</section>
 	);
 };

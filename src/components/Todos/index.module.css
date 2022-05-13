@@ -2,30 +2,67 @@
 	display: flex;
 	flex-direction: column;
 
-	overflow-y: auto;
+	height: 100%;
 
-	& > :last-child {
-		margin-top: auto;
+	& > :first-child {
+		flex-grow: 1;
+	}
+}
+
+.form {
+	position: sticky;
+	bottom: 0;
+
+	display: grid;
+	grid-template: auto auto/ max-content minmax(0, 1fr);
+	align-items: center;
+	gap: 0.5rem;
+
+	& > * > input {
+		--_border-color: hsl(var(--color-primary) / 0.5);
+
+		border: 2px solid var(--_border-color);
+		border-radius: 0.2rem;
+		padding: 0.5rem;
+
+		transition: var(--nomotion, border-color 200ms ease);
+
+		&::placeholder {
+			color: hsl(var(--color-text) / 0.4);
+		}
+
+		&:focus {
+			--_border-color: hsl(var(--color-primary) / 1);
+		}
 	}
 
-	@media (prefers-reduced-motion: no-preference) {
-		& :global(.fade-enter) {
-			opacity: 0;
-		}
+	& > :first-child {
+		grid-row: 1;
+		grid-column: 1/-1;
 
-		& :global(.fade-enter-active) {
-			opacity: 1;
-			transition: opacity 300ms ease-in;
-		}
+		background-color: hsl(var(--color-card));
 
-		& :global(.fade-exit) {
-			opacity: 1;
+		& > input {
+			width: 100%;
 		}
+	}
 
-		& :global(.fade-exit-active) {
-			opacity: 0;
-			transition: opacity 300ms ease-in;
+	& > :nth-child(2) {
+		grid-row: 2;
+		grid-colunmn: 1;
+
+		& > input {
+			border: 1px solid hsl(var(--color-primary));
+			padding: 0.5rem;
 		}
+	}
+
+	& > button {
+		background-color: hsl(var(--color-primary));
+		padding: 0.5rem;
+		border-radius: 5px;
+		text-align: center;
+		cursor: pointer;
 	}
 }
 
@@ -80,37 +117,10 @@
 	& > button {
 		cursor: pointer;
 		line-height: 0;
-
-		&:focus-visible {
-			outline: hsl(var(--color-primary) / 0.5) auto 1px;
-			outline-offset: 2px;
-		}
 	}
 }
 
-.new-todo {
-	position: sticky;
-	bottom: 0;
-
-	background-color: hsl(var(--color-card));
-
-	& > input {
-		--_border-color: hsl(var(--color-primary) / 0.5);
-
-		width: 100%;
-
-		border: 2px solid var(--_border-color);
-		border-radius: 0.2rem;
-		padding: 0.5rem;
-
-		transition: var(--nomotion, border-color 200ms ease);
-
-		&::placeholder {
-			color: hsl(var(--color-text) / 0.4);
-		}
-
-		&:focus {
-			--_border-color: hsl(var(--color-primary) / 1);
-		}
-	}
+.no-items {
+	display: grid;
+	place-items: center;
 }
