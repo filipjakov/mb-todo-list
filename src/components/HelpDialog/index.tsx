@@ -36,10 +36,10 @@ export const HelpDialog: FC<HelpDialogProps> = ({ close }) => {
 					<ul>
 						<li>NOTE: Tested only on MacOS and Android!</li>
 						<li>
-							Press <kbd>command</kbd> + <kbd>z</kbd> undo.
+							Press <kbd>command</kbd> + <kbd>z</kbd> to undo.
 						</li>
 						<li>
-							Press <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>z</kbd> redo.
+							Press <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>z</kbd> to redo.
 						</li>
 						<li>Be sure to delete your local storage if you encounter data corruption problems!</li>
 					</ul>

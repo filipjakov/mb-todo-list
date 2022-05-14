@@ -55,9 +55,11 @@ Tested on macOS 12.1 -> Desktop Safari v15.1, Firefox v100, Chrome v100, Mobile 
 
 ## Roadmap
 
-- [ ] dark mode toggle
-- [ ] translations
-- [ ] user login + user usermanagment -> store user preferences + todo entries in a database
+- dark mode toggle
+
+- translations
+
+- user login + user usermanagment -> store user preferences + todo entries in a database
 
 ## Badges
 
