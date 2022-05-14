@@ -21,13 +21,12 @@ export const TodoEditDialog: FC<TodoEditDialogProps<TodoData>> = ({ item, onDism
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		const { text, due, done } = Object.fromEntries(new FormData(e.currentTarget));
+		const { text, due } = Object.fromEntries(new FormData(e.currentTarget));
 
 		onDone({
 			...item,
 			text: text!.toString(),
 			...(due && { due: due.toString() }),
-			...(done && { isDone: !!done }),
 		});
 
 		onDismiss();
@@ -86,16 +85,6 @@ export const TodoEditDialog: FC<TodoEditDialogProps<TodoData>> = ({ item, onDism
 								min={new Date().toJSON().slice(0, 10)}
 								{...(item.due && { value: item.due })}
 							/>
-						</label>
-
-						<label>
-							<input
-								type="checkbox"
-								name="done"
-								checked={item.isDone}
-								style={{ width: '1.5rem', height: '1.5rem', margin: 0 }}
-							/>
-							<span>Is Task Done?</span>
 						</label>
 
 						<Button type="submit">Save</Button>

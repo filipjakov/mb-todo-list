@@ -31,14 +31,6 @@
 			& > input {
 				width: 100%;
 			}
-
-			/* Checkbox */
-			&:nth-child(3) {
-				display: grid;
-				grid-template-columns: auto minmax(0, 1fr);
-				align-items: center;
-				gap: 1ch;
-			}
 		}
 	}
 }
