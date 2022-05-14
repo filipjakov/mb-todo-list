@@ -18,7 +18,7 @@ export const useHotKeys = ({ onUndo, onRedo }: HotkeyOptions) => {
 	useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent) => {
 			// This way we still enable undo/redo functionality on the form controls
-			// Checks if some form containes the focusable element
+			// Checks if some form containes the focused element
 			if (Array.from(document.querySelectorAll('form')).some((form) => form.contains(document.activeElement))) {
 				return;
 			}

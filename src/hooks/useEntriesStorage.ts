@@ -26,7 +26,7 @@ export const useEntriesStorage = <T>({
 
 	// Listen to data changes and update the storage
 	useEffect(() => {
-		console.log(data);
+		console.log(data); // Log every state change
 		localStorage.setItem(key, JSON.stringify(data));
 	}, [data, key]);
 };

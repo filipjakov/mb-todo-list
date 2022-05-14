@@ -47,6 +47,7 @@ module.exports = {
 				aspects: ['invalidHref', 'preferButton'],
 			},
 		],
+		'jsx-a11y/label-has-associated-control': 'warn',
 		'no-return-await': 'error',
 	},
 };

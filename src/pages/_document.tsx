@@ -14,7 +14,6 @@ class MyDocument extends Document {
 					<title>TODO App</title>
 					<meta name="description" content="The ultimate TODO app with dark mode support" />
 
-					{/* <meta property="og:url" content="" /> */}
 					<meta property="og:title" content="TODO App" />
 					<meta property="og:description" content="The ultimate TODO app with dark mode support" />
 

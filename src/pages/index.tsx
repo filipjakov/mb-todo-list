@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 
-import { Layout, Todos } from '@components/index';
+import { Layout } from '@components/Layout';
+import { Todos } from '@components/Todos';
 
 import styles from './index.module.css';
 

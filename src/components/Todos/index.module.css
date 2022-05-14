@@ -2,11 +2,51 @@
 	display: flex;
 	flex-direction: column;
 
-	height: 100%;
-
 	& > :first-child {
 		flex-grow: 1;
 	}
+
+	overflow-y: auto;
+}
+
+.todo-container {
+	padding: 0.5rem 0.5rem 1rem;
+	perspective: 1000px;
+
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	& > * + * {
+		margin-top: 1rem;
+	}
+}
+
+.todo {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	column-gap: 1ch;
+
+	& > button {
+		cursor: pointer;
+		line-height: 0;
+		color: hsl(var(--color-primary));
+
+		transition: color 200ms ease-in, transform 200ms ease-out;
+
+		&:hover {
+			color: hsl(var(--color-primary) / 0.6);
+			transform: scale(1.1);
+		}
+
+		&:active {
+			transform: scale(0.9);
+		}
+	}
+}
+
+.no-items {
+	display: grid;
+	place-items: center;
 }
 
 .form {
@@ -18,23 +58,7 @@
 	align-items: center;
 	gap: 0.5rem;
 
-	& > * > input {
-		--_border-color: hsl(var(--color-primary) / 0.5);
-
-		border: 2px solid var(--_border-color);
-		border-radius: 0.2rem;
-		padding: 0.5rem;
-
-		transition: var(--nomotion, border-color 200ms ease);
-
-		&::placeholder {
-			color: hsl(var(--color-text) / 0.4);
-		}
-
-		&:focus {
-			--_border-color: hsl(var(--color-primary) / 1);
-		}
-	}
+	background-color: hsl(var(--color-card));
 
 	& > :first-child {
 		grid-row: 1;
@@ -42,7 +66,7 @@
 
 		background-color: hsl(var(--color-card));
 
-		& > input {
+		& > * {
 			width: 100%;
 		}
 	}
@@ -50,77 +74,5 @@
 	& > :nth-child(2) {
 		grid-row: 2;
 		grid-colunmn: 1;
-
-		& > input {
-			border: 1px solid hsl(var(--color-primary));
-			padding: 0.5rem;
-		}
 	}
-
-	& > button {
-		background-color: hsl(var(--color-primary));
-		padding: 0.5rem;
-		border-radius: 5px;
-		text-align: center;
-		cursor: pointer;
-	}
-}
-
-.todo-container {
-	padding: 1rem;
-	perspective: 1000px;
-
-	& > * {
-		margin-bottom: 1rem;
-	}
-
-	&:empty {
-		position: relative;
-		width: 100%;
-		height: 100%;
-
-		&::after {
-			content: 'Add a todo item below!';
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			text-align: center;
-		}
-	}
-
-	@media (hover: hover) and (pointer: fine) {
-		& > * {
-			transition: var(--nomotion, 300ms opacity), var(--nomotion, 300ms transform);
-		}
-
-		&:where(:hover, :focus-visible) > * {
-			opacity: var(--nomotion, 0.4);
-		}
-
-		&:where(:hover, :focus-visible) > *:where(:hover, :focus) {
-			transform: var(--nomotion, translateZ(0.5rem));
-			opacity: 1;
-		}
-
-		&:hover > :focus:not(:hover) {
-			transform: var(--nomotion, scale(1.05));
-		}
-	}
-}
-
-.todo {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) auto;
-	column-gap: 1ch;
-
-	& > button {
-		cursor: pointer;
-		line-height: 0;
-	}
-}
-
-.no-items {
-	display: grid;
-	place-items: center;
 }

@@ -1,17 +1,6 @@
-.heading {
-	font-size: 2rem;
-	line-height: 1.1;
-	font-weight: 800;
-
-	margin-bottom: 2rem;
-	text-align: center;
-}
-
 .content {
 	display: flex;
 	flex-direction: column;
-
-	background-color: hsl(var(--color-card));
 
 	& > :last-child {
 		flex-grow: 1;
@@ -20,10 +9,20 @@
 	height: 80vh;
 	width: 100%;
 
-	margin: auto;
-
-	border: 1px solid black;
 	padding: 1rem;
+	margin: auto;
+	border: 1px solid hsl(var(--color-text));
 	border-radius: 0.625rem;
+
+	background-color: hsl(var(--color-card));
 	box-shadow: 1.25rem 1.25rem 0 0.5rem hsl(var(--color-primary) / 0.2);
+}
+
+.heading {
+	font-size: 2rem;
+	line-height: 1.1;
+	font-weight: 600;
+
+	margin-bottom: 2rem;
+	text-align: center;
 }

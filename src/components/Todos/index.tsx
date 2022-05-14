@@ -1,8 +1,12 @@
 import classNames from 'classnames/bind';
-import { Reorder } from 'framer-motion';
-import { ComponentProps, DOMAttributes, FC, FormEvent } from 'react';
+import { AnimatePresence, Reorder } from 'framer-motion';
+import dynamic from 'next/dynamic';
+import { ComponentProps, DOMAttributes, FC, FormEvent, useCallback, useState } from 'react';
 
+import { Button } from '@components/Button';
+import { Input } from '@components/Input';
 import { Todo, TodoData } from '@components/Todo';
+import { TodoEditDialog } from '@components/TodoEditDialog';
 import { useEntriesStorage } from '@hooks/useEntriesStorage';
 import { useHotKeys } from '@hooks/useHotKeys';
 import { useRetrievableState } from '@hooks/useRetrievableState';
@@ -11,8 +15,15 @@ import styles from './index.module.css';
 
 const cx = classNames.bind(styles);
 
+// Lazy load the whole dialog component on first edit interaction
+const DynamicTodoEditDialog = dynamic<ComponentProps<typeof TodoEditDialog>>(
+	() => import('../TodoEditDialog').then((mod) => mod.TodoEditDialog),
+	{ ssr: false }
+);
+
 export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => {
 	const { state: todos, push, back, forward, reset } = useRetrievableState<Array<TodoData>>([]);
+	const [editItem, setEditItem] = useState<TodoData | null>(null);
 
 	useEntriesStorage({ onMount: reset, data: todos });
 	useHotKeys({ onUndo: back, onRedo: forward });
@@ -20,7 +31,9 @@ export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => 
 	// Handlers
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const { text, due } = Object.fromEntries(new FormData(e.currentTarget));
+
+		const form = e.currentTarget;
+		const { text, due } = Object.fromEntries(new FormData(form));
 
 		push(
 			todos.concat({
@@ -31,14 +44,18 @@ export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => 
 			})
 		);
 
-		// Reset input element value
-		(e.currentTarget.querySelector("input[type='text']") as HTMLInputElement).value = '';
+		form.reset();
 	};
 
 	const onRemove: DOMAttributes<HTMLButtonElement>['onClick'] = ({ currentTarget }) => {
 		const removedItemIndex = +currentTarget.dataset['index']!;
 
 		push(todos.filter((_, i) => i !== removedItemIndex));
+	};
+
+	const onEdit: DOMAttributes<HTMLButtonElement>['onClick'] = ({ currentTarget }) => {
+		const itemToEditIndex = +currentTarget.dataset['index']!;
+		setEditItem(todos[itemToEditIndex]!);
 	};
 
 	const onToggle = (index: number) => () => {
@@ -51,31 +68,80 @@ export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => 
 		);
 	};
 
+	// Dialog methods
+	const onEditDone = useCallback(
+		(item: TodoData) => {
+			push(
+				todos.reduce((accumulator, currentItem) => {
+					// Flip the existing checkbox value
+					const newItem = currentItem.id === item.id ? item : currentItem;
+					return accumulator.concat(newItem);
+				}, [] as typeof todos)
+			);
+		},
+		[push, todos]
+	);
+
+	const onDialogDismiss = useCallback(() => setEditItem(null), []);
+
 	return (
 		<section className={cx('root')} {...rest}>
 			{todos.length > 0 ? (
 				<Reorder.Group className={cx('todo-container')} axis="y" layoutScroll values={todos} onReorder={push}>
-					{todos.map((item, i) => (
-						<Reorder.Item
-							className={cx('todo')}
-							key={item.id}
-							value={item}
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-						>
-							<Todo isDone={item.isDone} text={item.text} due={item.due} onToggle={onToggle(i)} />
+					<AnimatePresence initial={false}>
+						{todos.map((item, i) => (
+							<Reorder.Item
+								className={cx('todo')}
+								key={item.id}
+								value={item}
+								initial={{ x: '-110%' }}
+								animate={{ x: 0 }}
+								exit={{ x: '110%' }}
+								transition={{
+									x: { type: 'spring', stiffness: 300, damping: 30 },
+									opacity: { duration: 0.2 },
+								}}
+							>
+								<Todo isDone={item.isDone} text={item.text} due={item.due} onToggle={onToggle(i)} />
 
-							<button type="button" data-index={i} onClick={onRemove}>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 875 1000" width="24" height="24">
-									<path
-										fill="hsl(var(--color-primary))"
-										d="M0 281.296v-68.355q1.953-37.107 29.295-62.496t64.449-25.389h93.744V93.808q0-39.06 27.342-66.402T281.232.064h312.48q39.06 0 66.402 27.342t27.342 66.402v31.248H781.2q37.107 0 64.449 25.389t29.295 62.496v68.355q0 25.389-18.553 43.943t-43.943 18.553v531.216q0 52.731-36.13 88.862T687.456 1000H187.488q-52.731 0-88.862-36.13t-36.13-88.862V343.792q-25.389 0-43.943-18.553T0 281.296zm62.496 0h749.952V218.8q0-13.671-8.789-22.46t-22.46-8.789H93.743q-13.671 0-22.46 8.789t-8.789 22.46v62.496zm62.496 593.712q0 25.389 18.553 43.943t43.943 18.553h499.968q25.389 0 43.943-18.553t18.553-43.943V343.792h-624.96v531.216zm62.496-31.248V437.536q0-13.671 8.789-22.46t22.46-8.789h62.496q13.671 0 22.46 8.789t8.789 22.46V843.76q0 13.671-8.789 22.46t-22.46 8.789h-62.496q-13.671 0-22.46-8.789t-8.789-22.46zm31.248 0h62.496V437.536h-62.496V843.76zm31.248-718.704H624.96V93.808q0-13.671-8.789-22.46t-22.46-8.789h-312.48q-13.671 0-22.46 8.789t-8.789 22.46v31.248zM374.976 843.76V437.536q0-13.671 8.789-22.46t22.46-8.789h62.496q13.671 0 22.46 8.789t8.789 22.46V843.76q0 13.671-8.789 22.46t-22.46 8.789h-62.496q-13.671 0-22.46-8.789t-8.789-22.46zm31.248 0h62.496V437.536h-62.496V843.76zm156.24 0V437.536q0-13.671 8.789-22.46t22.46-8.789h62.496q13.671 0 22.46 8.789t8.789 22.46V843.76q0 13.671-8.789 22.46t-22.46 8.789h-62.496q-13.671 0-22.46-8.789t-8.789-22.46zm31.248 0h62.496V437.536h-62.496V843.76z"
-									/>
-								</svg>
-							</button>
-						</Reorder.Item>
-					))}
+								<button data-index={i} onClick={onEdit} title="Edit">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										strokeWidth="1.5"
+										viewBox="0 0 24 24"
+										width="20"
+										height="20"
+									>
+										<path
+											stroke="currentColor"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M3 21h18M12.222 5.828 15.05 3 20 7.95l-2.828 2.828m-4.95-4.95-5.607 5.607a1 1 0 0 0-.293.707v4.536h4.536a1 1 0 0 0 .707-.293l5.607-5.607m-4.95-4.95 4.95 4.95"
+										/>
+									</svg>
+								</button>
+
+								<button data-index={i} onClick={onRemove} title="Delete">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										strokeWidth="1.5"
+										viewBox="0 0 24 24"
+										width="20"
+										height="20"
+									>
+										<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M8.992 13h6" />
+										<path
+											stroke="currentColor"
+											d="M3.04 4.294a.496.496 0 0 1 .191-.479C3.927 3.32 6.314 2 12 2s8.073 1.32 8.769 1.815a.496.496 0 0 1 .192.479l-1.7 12.744a4 4 0 0 1-1.98 2.944l-.32.183a10 10 0 0 1-9.922 0l-.32-.183a4 4 0 0 1-1.98-2.944l-1.7-12.744Z"
+										/>
+										<path stroke="currentColor" d="M3 5c2.571 2.667 15.429 2.667 18 0" />
+									</svg>
+								</button>
+							</Reorder.Item>
+						))}
+					</AnimatePresence>
 				</Reorder.Group>
 			) : (
 				<div className={cx('no-items')}>Enter a new todo below</div>
@@ -83,15 +149,22 @@ export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => 
 
 			<form onSubmit={onSubmit} className={cx(className, 'form')} autoComplete="off">
 				<label>
-					<input type="text" placeholder="Your next TODO item" name="text" required />
+					<Input type="text" placeholder="Your next TODO item" name="text" required />
 				</label>
 
 				<label>
-					<input type="date" name="due" min={new Date().toJSON().slice(0, 10)} />
+					<Input
+						type="date"
+						name="due"
+						min={new Date().toJSON().slice(0, 10)}
+						placeholder={new Date().toJSON().slice(0, 10)}
+					/>
 				</label>
 
-				<button type="submit">Submit</button>
+				<Button type="submit">Submit</Button>
 			</form>
+
+			{editItem && <DynamicTodoEditDialog item={editItem} onDismiss={onDialogDismiss} onDone={onEditDone} />}
 		</section>
 	);
 };
