@@ -18,7 +18,7 @@ const cx = classNames.bind(styles);
 // Lazy load the whole dialog component on first edit interaction
 const DynamicTodoEditDialog = dynamic<ComponentProps<typeof TodoEditDialog>>(
 	() => import('../TodoEditDialog').then((mod) => mod.TodoEditDialog),
-	{ ssr: false }
+	{ ssr: true }
 );
 
 export const Todos: FC<ComponentProps<'section'>> = ({ className, ...rest }) => {

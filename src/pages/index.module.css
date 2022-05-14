@@ -26,3 +26,17 @@
 	margin-bottom: 2rem;
 	text-align: center;
 }
+
+.help {
+	position: absolute;
+	left: 50%;
+	top: 1rem;
+	transform: translateX(-50%);
+
+	display: grid;
+	grid-auto-flow: column;
+	column-gap: 0.5ch;
+	align-items: center;
+
+	cursor: pointer;
+}
