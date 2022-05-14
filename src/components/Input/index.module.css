@@ -1,0 +1,18 @@
+.root {
+	--_border-color: hsl(var(--color-primary) / 0.5);
+
+	padding: 0.5rem;
+
+	border: 2px solid var(--_border-color);
+	border-radius: 0.2rem;
+
+	transition: var(--nomotion, border-color 200ms ease);
+
+	&::placeholder {
+		color: hsl(var(--color-text) / 0.4);
+	}
+
+	&:focus {
+		--_border-color: hsl(var(--color-primary) / 1);
+	}
+}

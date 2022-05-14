@@ -1,0 +1,18 @@
+.root {
+	padding: 0.5rem;
+	border-radius: 5px;
+	background-color: hsl(var(--color-primary));
+
+	text-align: center;
+	cursor: pointer;
+
+	transition: background-color 200ms ease-in, transform 100ms ease-in;
+
+	&:hover {
+		background-color: hsl(var(--color-primary) / 0.9);
+	}
+
+	&:active {
+		transform: scale(0.99);
+	}
+}
