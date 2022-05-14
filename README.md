@@ -41,7 +41,7 @@ Tested on macOS 12.1 -> Desktop Safari v15.1, Firefox v100, Chrome v100, Mobile 
 
   - [x] every item in the list has a name and optional due date
   - [x] items can be marked as “done”
-  - [x] implement undo/redo functionality. Every action (add, edit, delete, mark as done…) should be undoable/redoable. This functionality has to be custom developed in full without using any library that might have this feature built-in. REMARK: missing edit functionality, just delete the todo and start over hehe
+  - [x] implement undo/redo functionality. Every action (add, edit, delete, mark as done…) should be undoable/redoable. This functionality has to be custom developed in full without using any library that might have this feature built-in
   - [x] add keyboard shortcut support for all actions. You can implement any key combination of your choice -> tested only on macos (cmd+z undo, cmd+shift+z redo)
   - [x] implement item reordering with drag ‘n’ drop
   - [x] item reordering should be undoable/redoable as well as other actions
