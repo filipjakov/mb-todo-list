@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { ComponentProps, DOMAttributes, FC, useState } from 'react';
+import { ComponentProps, DOMAttributes, FC, useEffect, useState } from 'react';
 
 import { StrikeThrough } from '../StrikeThrough';
 import styles from './index.module.css';
@@ -21,6 +21,10 @@ export const Todo: FC<TodoProps> = ({ className, isDone, text, due, onToggle, ..
 	const [done, setDone] = useState(isDone);
 	const Component = done ? StrikeThrough : 'span';
 
+	useEffect(() => {
+		setDone(isDone);
+	}, [isDone]);
+
 	const onClick: DOMAttributes<HTMLInputElement>['onClick'] = ({ currentTarget }) => {
 		setDone(currentTarget.checked);
 		onToggle();
@@ -28,7 +32,7 @@ export const Todo: FC<TodoProps> = ({ className, isDone, text, due, onToggle, ..
 
 	return (
 		<label className={cx(className, 'root')} {...rest}>
-			<input type="checkbox" onClick={onClick} checked={isDone} />
+			<input type="checkbox" checked={done} onClick={onClick} />
 
 			<Component>
 				{due ? (
